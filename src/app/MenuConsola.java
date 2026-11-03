@@ -120,12 +120,22 @@ public class MenuConsola {
     }
 
     /**
-     * Opcion 1: registra a un propietario y a su mascota
+     * Opcion 1: registra a una mascota. El propietario puede ser nuevo o uno que ya
+     * esta registrado, porque un propietario puede tener varias mascotas.
      */
     private void registrarPropietarioYMascota() {
-        Propietario propietario = crearPropietario();
+        String respuesta = leerTexto("El propietario ya esta registrado? (s/n): ");
+        boolean esNuevo = !respuesta.equalsIgnoreCase("s");
+        Propietario propietario;
+        if (esNuevo) {
+            propietario = crearPropietario();
+        } else {
+            propietario = seleccionarPropietario();
+        }
         Mascota mascota = crearMascota(propietario);
-        clinica.registrarPropietario(propietario);
+        if (esNuevo) {
+            clinica.registrarPropietario(propietario);
+        }
         clinica.registrarMascota(mascota);
         System.out.println("Registrado: " + mascota);
     }
@@ -321,6 +331,27 @@ public class MenuConsola {
         for (Cita cita : citas) {
             System.out.println(cita);
         }
+    }
+
+    /**
+     * Muestra los propietarios y pide elegir uno
+     * @return Propietario elegido
+     * @throws IllegalStateException si no hay propietarios registrados
+     * @throws IllegalArgumentException si el numero elegido esta fuera de rango
+     */
+    private Propietario seleccionarPropietario() {
+        List<Propietario> propietarios = clinica.getPropietarios();
+        if (propietarios.isEmpty()) {
+            throw new IllegalStateException("No hay propietarios registrados");
+        }
+        for (int i = 0; i < propietarios.size(); i++) {
+            System.out.println((i + 1) + ". " + propietarios.get(i).getNombreCompleto());
+        }
+        int opcion = leerEntero("Seleccione un propietario: ");
+        if (opcion < 1 || opcion > propietarios.size()) {
+            throw new IllegalArgumentException("La opcion esta fuera de rango");
+        }
+        return propietarios.get(opcion - 1);
     }
 
     /**

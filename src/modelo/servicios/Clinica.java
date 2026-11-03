@@ -241,6 +241,14 @@ public class Clinica {
     }
 
     /**
+     * Obtiene los propietarios registrados
+     * @return Copia de la lista de propietarios
+     */
+    public List<Propietario> getPropietarios() {
+        return new ArrayList<>(propietarios);
+    }
+
+    /**
      * Obtiene los veterinarios de la clinica
      * @return Copia de la lista de veterinarios
      */
